@@ -1,6 +1,7 @@
 import languages from './langs/languages'
 
 let current_lang = null;
+let current_translation = null;
 
 let translations = {};
 
@@ -19,6 +20,11 @@ class Multilang
 	static getLang()
 	{
 		return current_lang;
+	}
+
+	static getTranslation()
+	{
+		return current_translation;
 	}
 
 	static isTranslationAvailable(lang)
@@ -42,10 +48,11 @@ class Multilang
 			throw `Unknown language [${lang}]`;
 		}
 
-		current_lang = translations[lang];
+		current_lang = lang;
+		current_translation = translations[lang];
 	}
 
-	static getTranslations()
+	static getAvailableTranslations()
 	{
 		return translations;
 	}

@@ -10,7 +10,7 @@ export const _lang = function(path, _default = "", data = {})
 		_default = "";
 	}
 
-	let value = readByPath(Multilang.getLang(), path) || _default;
+	let value = readByPath(Multilang.getTranslation(), path) || _default;
 
 	for(let key in data) {
 		value = value.replace(`_${key}_`, data[key]);
