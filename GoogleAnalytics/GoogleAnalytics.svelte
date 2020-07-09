@@ -1,7 +1,6 @@
 <script>
-  import { stores } from '@sapper/app';
-  const { page } = stores();
 
+  export let page = null;
   export let gtag_id = null;
 
   $: {
