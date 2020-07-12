@@ -1,3 +1,5 @@
+import {HtmlTagsMasker} from "../html_tags_masker";
+
 const {Translate} = require('@google-cloud/translate').v2;
 
 let gTranslator = null;
@@ -9,9 +11,15 @@ export const setup = (apiKey) =>
 
 export const translateText = async(text, to) =>
 {
-	const [translation] = await gTranslator.translate(text, to);
+	const htmlTagsMask = HtmlTagsMasker.mask(text);
 
-	return translation;
+	const [translation] = await gTranslator.translate(htmlTagsMask.text, to);
+
+	htmlTagsMask.text = translation;
+
+	const result = HtmlTagsMasker.unmask(htmlTagsMask);
+
+	return result;
 };
 
 export const translateJson = async (json, to) =>

@@ -11,5 +11,7 @@
   "dependencies": {
     "@google-cloud/translate": "^6.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "esm": "^3.2.25"
+  }
 }
