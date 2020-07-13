@@ -43,7 +43,11 @@ export class HtmlTagsMasker
 		let result = mask.text;
 
 		for(let key in mask.masks) {
-			result = result.replace(key.trim(), mask.masks[key]);
+			if(result.match(key.trim())) {
+				result = result.replace(key.trim(), mask.masks[key]);
+			} else {
+				console.debug(`Unmasking: [${key}] failed. Match not found. Input: [${result}]`)
+			}
 		}
 
 		return result;

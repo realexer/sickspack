@@ -1,3 +1,10 @@
+let _debug = false;
+
+const enableDebug = (enable = true) =>
+{
+	_debug = enable;
+};
+
 class Unsubscriby
 {
 	constructor(onDestroy = () => {})
@@ -54,7 +61,9 @@ class Unsubscriby
 	{
 		if(item.status === 'sub')
 		{
-			console.log(`Unsubscribing from: ${item.callable}`);
+			if(_debug) {
+				console.debug(`Unsubscribing from: ${item.callable}`);
+			}
 
 			item.callable();
 			item.status = 'done';
@@ -70,4 +79,4 @@ class Unsubscriby
 	}
 }
 
-export {Unsubscriby};
+export {Unsubscriby, enableDebug};
