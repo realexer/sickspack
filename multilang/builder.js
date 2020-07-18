@@ -10,7 +10,7 @@ export const buildLangs = async (fromObject, langCodes, savePath) =>
 			console.debug(`Translating: [${lang}]`);
 
 			const translation = await JsonTranslator.translateObject(fromObject, lang);
-			await fs.promises.writeFile(path.resolve(__dirname, `${savePath}/${lang}.js`), `export default ${JSON.stringify(translation)}`);
+			await fs.promises.writeFile(path.resolve(__dirname, `${savePath}/${lang}.js`), `export default ${JSON.stringify(translation, null, '\t')}`);
 
 		} catch (e) {
 			console.error(e);
