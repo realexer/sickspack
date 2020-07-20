@@ -44,10 +44,6 @@ export const _format = (value, data) =>
 
 const _formatString = (value, data) =>
 {
-	// TODO: keeping it in case if HtmlTagsMasker will not be enough to keep HTML tags in the original translation
-	value = value.replace(/_open_(?<tag>[^_]+)_/gm, "<$1>");
-	value = value.replace(/_close_(?<tag>[^_]+)_/gm, "</$1>");
-
 	for(let key in data) {
 		value = value.replace(`_${key}_`, data[key]);
 	}
