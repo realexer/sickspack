@@ -43,3 +43,30 @@ export const writeByPath = (object, path, value) =>
 		}
 	}
 };
+
+export const flattenObject = (object, keyPath = []) =>
+{
+	let keys = {};
+
+	switch (typeof object)
+	{
+		case 'object':
+			for(let key in object) {
+				let path = [...keyPath, key];
+				keys = Object.assign(keys, flattenObject(object[key], path));
+			}
+			break;
+
+		case 'array':
+			for(let i = 0; i < object.length; i++) {
+				let path = [...keyPath, i];
+				keys = Object.assign(keys, flattenObject(object[i], path));
+			}
+			break;
+
+		default:
+			keys[keyPath.join('.')] = object;
+	}
+
+	return keys;
+};
