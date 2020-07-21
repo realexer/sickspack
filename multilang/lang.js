@@ -45,8 +45,7 @@ export const _format = (value, data) =>
 const _formatString = (value, data) =>
 {
 	for(let key in data) {
-		value = value.replace(`_${key}_`, data[key]);
-		value = value.replace(`_${key.toUpperCase()}_`, data[key]);
+		value = value.replace(new RegExp(`_${key}_`, 'ig'), data[key]);
 	}
 
 	for(let i in formats) {
