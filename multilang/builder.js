@@ -51,7 +51,7 @@ export const validateTranslations = (source, translations) =>
 
 				for(let lang in flattenTranslations)
 				{
-					const translatedValue = translations[lang][keyPath];
+					const translatedValue = flattenTranslations[lang][keyPath];
 					if(!translatedValue) {
 						issues[lang].push(`[${keyPath}]: not found.`);
 						continue;
@@ -62,7 +62,7 @@ export const validateTranslations = (source, translations) =>
 						continue;
 					}
 
-					translations[lang][keyPath] = translatedValue.replace(dataPlaceholder, '');
+					flattenTranslations[lang][keyPath] = translatedValue.replace(dataPlaceholder, '');
 				}
 			}
 		}
