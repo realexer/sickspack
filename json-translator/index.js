@@ -6,21 +6,6 @@ let _maskTags = false;
 
 let gTranslator = null;
 
-class DataPlaceholderMasker
-{
-	static mask(input)
-	{
-		const pattern = /_(x[^\W]+)_/gi;
-		return input.replace(pattern, `<$1>`)
-	}
-
-	static unmask(input)
-	{
-		const pattern = /\<(x[^\W]+)\>/gi;
-		return input.replace(pattern, `_$1_`)
-	}
-}
-
 export const setup = (apiKey, maskTags = false) =>
 {
 	gTranslator = new Translate({key: apiKey});
@@ -49,9 +34,8 @@ export const translatePlainText = async(text, to, model='base') =>
 		to: to,
 		model: model
 	};
-	const maskedInput = DataPlaceholderMasker.mask(text);
-	const [translation] = await gTranslator.translate(maskedInput, request);
-	return DataPlaceholderMasker.unmask(translation);
+	const [translation] = await gTranslator.translate(text, request);
+	return translation;
 };
 
 export const translateMaskedText = async(text, to) =>
