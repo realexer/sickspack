@@ -21,9 +21,20 @@ export const translateText = async(text, to) =>
 	return await translatePlainText(text, to);
 };
 
-export const translatePlainText = async(text, to) =>
+/**
+ *
+ * @param text
+ * @param to
+ * @param model base|nmt
+ * @returns {Promise<string | string[]>}
+ */
+export const translatePlainText = async(text, to, model='base') =>
 {
-	const [translation] = await gTranslator.translate(text, to);
+	const request = {
+		to: to,
+		model: model
+	};
+	const [translation] = await gTranslator.translate(text, request);
 	return translation;
 };
 
