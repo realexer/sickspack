@@ -57,7 +57,7 @@ export const validateTranslations = (source, translations) =>
 						continue;
 					}
 
-					if(translatedValue.match(dataPlaceholder) === null) {
+					if(translatedValue.match(new RegExp(dataPlaceholder, 'i')) === null) {
 						issues[lang].push(`[${keyPath}]: '${dataPlaceholder}' missing.`);
 						continue;
 					}
