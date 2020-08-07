@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/translate": "^6.0.1"
+    "@google-cloud/translate": "^6.0.1",
+    "node-fetch": "latest"
   },
   "devDependencies": {
     "esm": "^3.2.25"
