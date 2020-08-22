@@ -18,6 +18,8 @@ let _formatter =
 	}
 };
 
+let _timeout = 0;
+
 let _responseProcessor = (result, response, responseData) =>
 {
 	if(_successCodes.includes(response.status)) {
@@ -50,6 +52,11 @@ class ApiRequest
 	static setContentType(contentType)
 	{
 		_contentType = contentType;
+	}
+
+	static setTimeout(seconds)
+	{
+		_timeout = seconds;
 	}
 
 	/**
@@ -86,13 +93,13 @@ class ApiRequest
 
 		try
 		{
-			const response = await _fetch(`${url}`, {
+			const response = await ApiRequest.timeoutFetch(`${url}`, {
 				method: type,
 				headers: {
 					'Content-Type': _contentType,
 				},
 				body: data
-			});
+			}, _timeout);
 
 			const responseData = await _formatter.response(response);
 
@@ -104,6 +111,42 @@ class ApiRequest
 		}
 
 		return result;
+	}
+
+	/**
+	 *
+	 * @param url
+	 * @param options
+	 * @param timeout in seconds
+	 * @returns {Promise<any>}
+	 */
+	static async timeoutFetch (url, options, timeout = 0)
+	{
+		if(timeout > 0)
+		{
+			let timer = null;
+
+			return Promise.race([
+				(async () => {
+					const result = await _fetch(url, options);
+
+					if(timer) {
+						clearTimeout(timer);
+					}
+
+					return result;
+				})(),
+				new Promise((_, reject) => {
+					timer = setTimeout(() =>
+					{
+						reject(new Error(`Soft timeout [${timeout}] seconds.`));
+					},
+					timeout * 1000);
+				})
+			]);
+		} else {
+			return _fetch(url, options)
+		}
 	}
 }
 

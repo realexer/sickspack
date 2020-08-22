@@ -37,7 +37,7 @@ class ApiResult
 		return !this.isSuccess();
 	}
 
-	getErrorMessage()
+	getMessage()
 	{
 		return this.message;
 	}
@@ -59,7 +59,7 @@ class ApiResult
 		result.setSuccess(results);
 		for(let item of results) {
 			if(item.isSuccess() === false) {
-				result.setError(item.getErrorMessage())
+				result.setError(item.getMessage())
 			}
 		}
 
