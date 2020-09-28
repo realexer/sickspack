@@ -110,7 +110,8 @@ const ApiResultCode = {
 	success: 200,
 	invalid_request: 400,
 	not_found: 404,
-	invalid_data: 500
+	timeout: 408,
+	invalid_data: 500,
 };
 
 export {ApiResult, ApiResultCode};

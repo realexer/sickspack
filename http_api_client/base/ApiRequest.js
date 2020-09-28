@@ -6,6 +6,7 @@ let _successCodes = [
 	ApiResultCode.success
 ];
 let _fetch = null;
+let _fetchOptions = {};
 
 let _formatter =
 {
@@ -44,6 +45,10 @@ class ApiRequest
 		_fetch = fetch;
 	}
 
+	static setFetchOption(key, value) {
+		_fetchOptions[key] = value;
+	}
+
 	static setFormatter(formatter)
 	{
 		_formatter = formatter;
@@ -62,52 +67,72 @@ class ApiRequest
 	/**
 	 *
 	 * @param url
+	 * @param options
 	 * @returns {Promise<ApiResult>}
 	 */
-	static async get(url)
+	static async get(url, options = {})
 	{
-		return await ApiRequest.perform(ApiRequestType.GET, url);
+		options.method = ApiRequestType.GET;
+
+		return await ApiRequest.perform(url, options);
 	};
 
 	/**
 	 *
 	 * @param url
 	 * @param data
+	 * @param options
 	 * @returns {Promise<ApiResult>}
 	 */
-	static async post(url, data)
+	static async post(url, data, options = {})
 	{
-		return await ApiRequest.perform(ApiRequestType.POST, url, await _formatter.request(data));
+		options.method = ApiRequestType.POST;
+
+		return await ApiRequest.perform(url, options, await _formatter.request(data));
 	}
 
 	/**
 	 *
-	 * @param type
 	 * @param url
+	 * @param options
 	 * @param data
 	 * @returns {Promise<ApiResult>}
 	 */
-	static async perform(type, url, data = null)
+	static async perform(url, options = {}, data = null)
 	{
 		const result = new ApiResult();
 
 		try
 		{
-			const response = await ApiRequest.timeoutFetch(`${url}`, {
-				method: type,
+			options = Object.assign({
 				headers: {
 					'Content-Type': _contentType,
 				},
-				body: data
-			}, _timeout);
+				body: data,
+				timeout: _timeout * 1000
+			}, options);
+
+			const response = await ApiRequest.timeoutFetch(`${url}`, options, _timeout);
 
 			const responseData = await _formatter.response(response);
 
 			_responseProcessor(result, response, responseData);
 
-		} catch (e) {
-			console.error(e);
-			result.setError(e.toString());
+		}
+		catch (e)
+		{
+			if(e.constructor === ApiRequestTimeoutError) {
+				result.setError(e.toString(), ApiResultCode.timeout);
+			}
+			else if(e.constructor.name === "RequestError")
+			{
+				result.setError(e.toString(), ApiResultCode.timeout);
+			}
+			else
+			{
+				console.error(e);
+				result.setError(e.toString());
+			}
 		}
 
 		return result;
@@ -120,33 +145,29 @@ class ApiRequest
 	 * @param timeout in seconds
 	 * @returns {Promise<any>}
 	 */
-	static async timeoutFetch (url, options, timeout = 0)
+	static async timeoutFetch (url, options, timeout)
 	{
-		if(timeout > 0)
-		{
-			let timer = null;
-
-			return Promise.race([
-				(async () => {
-					const result = await _fetch(url, options);
-
-					if(timer) {
-						clearTimeout(timer);
-					}
-
-					return result;
-				})(),
-				new Promise((_, reject) => {
-					timer = setTimeout(() =>
+		return Promise.race([
+			new Promise((_, reject) =>
+			{
+				if(timeout) {
+					setTimeout(() =>
 					{
-						reject(new Error(`Soft timeout [${timeout}] seconds.`));
+						reject(new ApiRequestTimeoutError(`Soft timeout [${timeout}] seconds.`));
 					},
-					timeout * 1000);
-				})
-			]);
-		} else {
-			return _fetch(url, options)
-		}
+						timeout * 1000);
+				}
+			}),
+			_fetch(url, options)
+		]);
+	}
+}
+
+export class ApiRequestTimeoutError extends Error
+{
+	constructor(message)
+	{
+		super(message);
 	}
 }
 

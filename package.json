@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/translate": "^6.0.1",
-    "node-fetch": "latest"
+    "node-fetch": "latest",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
   },
   "devDependencies": {
     "esm": "^3.2.25"
