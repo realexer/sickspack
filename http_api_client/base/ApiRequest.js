@@ -105,12 +105,14 @@ class ApiRequest
 		try
 		{
 			options = Object.assign({
-				headers: {
-					'Content-Type': _contentType,
-				},
+				headers: {},
 				body: data,
 				timeout: _timeout * 1000
 			}, options);
+
+			if(_contentType) {
+				options.headers['Content-Type'] = _contentType;
+			}
 
 			const response = await ApiRequest.timeoutFetch(`${url}`, options, _timeout);
 
