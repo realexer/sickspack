@@ -3,7 +3,7 @@ import languages from './langs/languages'
 let current_lang = null;
 let current_translation = null;
 
-let translations = {};
+let translations = null;
 
 class Multilang
 {
@@ -35,7 +35,7 @@ class Multilang
 	static getSupportedLanguages()
 	{
 		return Object.keys(languages)
-			.filter(lang => Object.keys(translations).includes(lang))
+			.filter(lang => Object.keys(translations || {}).includes(lang))
 			.reduce((obj, key) => {
 				obj[key] = languages[key];
 				return obj;

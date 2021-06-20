@@ -13,7 +13,7 @@ export const _lang = function(path, _default = "", data = {})
 
 	let value = readByPath(Multilang.getTranslation(), path) || _default;
 
-	return _format(value, Object.assign(defaultData, data));
+	return _format(value, Object.assign({}, defaultData, data));
 };
 
 export const addDefaultData = (key, value) =>
