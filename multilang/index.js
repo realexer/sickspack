@@ -27,6 +27,11 @@ class Multilang
 		return current_translation;
 	}
 
+	static getLangTranslation(lang)
+	{
+		return translations[lang];
+	}
+
 	static isTranslationAvailable(lang)
 	{
 		return translations[lang] !== undefined;

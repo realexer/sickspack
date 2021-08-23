@@ -6,12 +6,17 @@ const formats = [];
 
 export const _lang = function(path, _default = "", data = {})
 {
+	return _langBy(Multilang.getLang(), path, _default, data);
+};
+
+export const _langBy = function(lang, path, _default = "", data = {})
+{
 	if(typeof _default === 'object') {
 		data = _default;
 		_default = "";
 	}
 
-	let value = readByPath(Multilang.getTranslation(), path) || _default;
+	let value = readByPath(Multilang.getLangTranslation(lang), path) || _default;
 
 	return _format(value, Object.assign({}, defaultData, data));
 };
@@ -51,7 +56,11 @@ export const _format = (value, data) =>
 const _formatString = (value, data) =>
 {
 	for(let key in data) {
-		value = value.replace(new RegExp(`_${key}_`, 'ig'), data[key]);
+		let replacement = data[key];
+		if(typeof  replacement === 'function') {
+			replacement = replacement();
+		}
+		value = value.replace(new RegExp(`_${key}_`, 'ig'), replacement);
 	}
 
 	for(let i in formats) {
