@@ -69,6 +69,10 @@ export const flattenObject = (object, keyPath = [], includeStrucutre = false) =>
 		}
 	}
 
+	if(object == null) {
+		object = {};
+	}
+
 	switch (object.constructor.name)
 	{
 		case 'Object':

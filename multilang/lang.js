@@ -46,6 +46,10 @@ export const _format = (value, data) =>
 			}
 			break;
 
+		case 'number':
+			value = value;
+			break;
+
 		default:
 			value = _formatString(value, data);
 	}

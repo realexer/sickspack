@@ -49,7 +49,7 @@ export const refreshLangs = async (fromObject, translations, savePath) =>
 					|| originalValue.value.indexOf("--") === 0)
 				{
 					const textToTranslate = originalValue.value.replace(/^--/, "");
-					console.debug(`Translating: [${textToTranslate}]`);
+					console.debug(`Translating [${lang}]: [${textToTranslate}]`);
 
 					const translatedValue = await JsonTranslator.translateObject(textToTranslate, lang);
 
