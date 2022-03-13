@@ -11,12 +11,13 @@ export const ChangeFreq =
 
 export class SitemapPageMetadata
 {
-	constructor(baseUrl, location, priority, changeFreq)
+	constructor(baseUrl, location, priority, changeFreq, lastMod)
 	{
 		this.baseUrl = baseUrl;
 		this.location = location;
 		this.priority = priority;
 		this.changeFreq = changeFreq;
+		this.lastMod = lastMod;
 	}
 
 	localizeLocation(lang) {
@@ -37,6 +38,7 @@ export class SitemapPage
 		const alternatives = this.alternatives.map(a => a.toXML()).join('\n');
 		const priority = this.metaData.priority ? `<priority>${this.metaData.priority.toFixed(1)}</priority>` : '';
 		const changeFreq = this.metaData.changeFreq ? `<changefreq>${this.metaData.changeFreq}</changefreq>` : '';
+		const lastMod = this.metaData.lastMod ? `<lastmod>${this.metaData.lastMod}</lastmod>` : '';
 
 		return `
 						<url>
@@ -44,6 +46,7 @@ export class SitemapPage
 							${priority}
 							${changeFreq}
 							${alternatives}
+							${lastMod}
 						</url>`;
 	}
 }

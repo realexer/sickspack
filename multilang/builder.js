@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import * as JsonTranslator from '../json-translator';
-import {flattenObject, readByPath, writeByPath} from "../object-key-path";
+import {flattenObject, readByPath, writeByPath, copyStructure} from "../object-key-path";
+import {mergeDeep} from "../deep-merge";
 
 export const buildLangs = async (fromObject, langCodes, savePath) =>
 {
@@ -32,17 +33,27 @@ export const refreshLangs = async (fromObject, translations, savePath) =>
 
 			const langTranslation = translations[lang];
 
+			copyStructure(fromObject, langTranslation);
+
 			for(let keyPath in langKeys)
 			{
-				const originalValue = readByPath(fromObject, keyPath);
+				const originalValue = readByPath(fromObject, keyPath, true);
 
-				if(readByPath(langTranslation, keyPath) === undefined)
+				if(!originalValue || !originalValue.value)
+					continue;
+
+				const translationValue = readByPath(langTranslation, keyPath);
+
+				if(translationValue === undefined
+					|| translationValue === ""
+					|| originalValue.value.indexOf("--") === 0)
 				{
-					console.debug(`Translating: [${originalValue}]`);
+					const textToTranslate = originalValue.value.replace(/^--/, "");
+					console.debug(`Translating [${lang}]: [${textToTranslate}]`);
 
-					const translatedValue = await JsonTranslator.translateObject(JSON.parse(JSON.stringify(originalValue)), lang);
+					const translatedValue = await JsonTranslator.translateObject(textToTranslate, lang);
 
-					writeByPath(langTranslation, keyPath, translatedValue);
+					writeByPath(langTranslation, keyPath, translatedValue, originalValue.type);
 				}
 			}
 

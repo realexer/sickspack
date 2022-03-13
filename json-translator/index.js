@@ -56,16 +56,16 @@ export const translateJson = async (json, to) =>
 
 export const translateObject = async (object, to) =>
 {
-	switch(typeof object)
+	switch(object.constructor.name)
 	{
-		case "object":
+		case "Object":
 			for(let key in object)
 			{
 				object[key] = await translateObject(object[key], to);
 			}
 			break;
 
-		case "array":
+		case "Array":
 			for(let i = 0; i < object.length; i++) {
 				object[i] = await translateText(object[i], to);
 			}
